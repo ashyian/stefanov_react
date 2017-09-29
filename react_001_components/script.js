@@ -1,27 +1,36 @@
+// Создание компонента
 var TextAreaCounter = React.createClass({
+
+  // Объявление списка принимаемых свойств
   propTypes: {
-    text: React.PropTypes.string,
+    initialValue: React.PropTypes.string,
   },
 
-  getDefaultProps: function() {
+  // вызывается после инициализации компонента, устанавливает начальное состояние
+  getInitialState: function() {
     return {
-      text: '',
+      text: this.props.initialValue,
     };
   },
 
+  // Метод для обновления состояния
   _textChange: function(event) {
+    // Устанавливается новое состояние компонента
     this.setState({
       text: event.target.value,
     });
   },
   
-  // вызывается после инициализации компонента, устанавливает начальное состояние
-  getInitialState: function() {
-    return {
-      text: this.props.text,
-    };
+  componentWillReceiveProps: function(nextProps) {
+    console.log("componentWillReceiveProps");
+    this.setState({
+      text: nextProps.initialValue,
+    });
   },
 
+
+
+  // Возврат React-компонента для отображения
   render: function() {
     return React.DOM.div(
       null,
@@ -43,13 +52,14 @@ var TextAreaCounter = React.createClass({
 
 // Пока виртуальный элемент содержится только в памяти JavaScript.
 // Мы должны явно сообщить React отрисовать его в браузере с помощью метода render()
-ReactDOM.render(
+var textComponent = ReactDOM.render(
   // Метод render принимает два аргумента: виртуальный элемент и реальный узел DOM.
   // React берёт виртуальный элемент и добавляет его в указанный узел
   React.createElement(
     TextAreaCounter,
     {
-      text: "Input some text",
+      // Передача свойства компоненту
+      initialValue: "Another text...",
     }
   ),
   document.getElementById("app")
