@@ -14,9 +14,9 @@ var logMixin = {
   componentDidUpdate: function(oldProps, oldState) {
     this._log('componentDidUpdate', arguments);
     // ограничение количества набираемых символов
-    if (this.state.text.length > 15) {
-      this.replaceState(oldState);
-    }
+    // if (this.state.text.length > 15) {
+    //   this.replaceState(oldState);
+    // }
   },
 
   // Вызывается непосредственно перед рендерингом компонента
@@ -35,7 +35,19 @@ var logMixin = {
   }
 };
 
-// Создание компонента
+// Дочерний компонент
+  var Counter = React.createClass({
+    name: "Counter",
+    mixins: [logMixin],
+    propTypes: {
+      count: React.PropTypes.number.isRequired,
+    },
+    render: function() {
+      return React.DOM.span(null, this.props.count);
+    }
+  });
+
+// Родительский компонент
 var TextAreaCounter = React.createClass({
 
   // Свойство для идентификации вызывающего кода (исп. в методе _log миксина)
@@ -71,10 +83,18 @@ var TextAreaCounter = React.createClass({
     });
   },
 
-
-
   // Возврат React-компонента для отображения
   render: function() {
+    var counter = null;
+
+    // Если в поле нет символов - количество букв не выводится
+    if (this.state.text.length > 0) {
+      counter = React.DOM.h3(
+        null,
+        React.createElement(Counter, {count: this.state.text.length,})
+      );
+    }
+
     return React.DOM.div(
       null,
       React.DOM.textarea(
@@ -85,10 +105,7 @@ var TextAreaCounter = React.createClass({
           rows: 10,
         }
       ),
-      React.DOM.h3(
-        null,
-        "Letters count: " + this.state.text.length
-      )
+      counter
     );
   }
 });
@@ -100,10 +117,8 @@ var textComponent = ReactDOM.render(
   // React берёт виртуальный элемент и добавляет его в указанный узел
   React.createElement(
     TextAreaCounter,
-    {
-      // Передача свойства компоненту
-      initialValue: "Some text...",
-    }
+    // Передача свойства компоненту
+    {initialValue: "Some text...",}
   ),
   document.getElementById("app")
 );
