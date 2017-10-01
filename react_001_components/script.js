@@ -1,6 +1,40 @@
 // Создание компонента
 var TextAreaCounter = React.createClass({
 
+  _log: function(methodName, args) {
+    console.log(methodName, args);
+  },
+
+  // Вызывается перед обновлением компонента
+  componentWillUpdate: function() {
+    this._log('componentWillUpdate', arguments);
+  },
+
+  // Вызывается после обновления компонента.
+  // Параметры: старые значения объектов props и state.
+  componentDidUpdate: function(oldProps, oldState) {
+    this._log('componentDidUpdate', arguments);
+    // ограничение количества набираемых символов
+    if (this.state.text.length > 15) {
+      this.replaceState(oldState);
+    }
+  },
+
+  // Вызывается непосредственно перед рендерингом компонента
+  componentWillMount: function() {
+    this._log('componentWillMount', arguments);
+  },
+
+  // Вызывается после рендеринга компонента
+  componentDidMount: function() {
+    this._log('componentDidMount', arguments);
+  },
+  
+  // Вызывается перед удалением компонента из DOM
+  componentWillUnmount: function() {
+    this._log('componentWillUnmount', arguments);
+  },
+
   // Объявление списка принимаемых свойств
   propTypes: {
     initialValue: React.PropTypes.string,
@@ -59,7 +93,7 @@ var textComponent = ReactDOM.render(
     TextAreaCounter,
     {
       // Передача свойства компоненту
-      initialValue: "Another text...",
+      initialValue: "Some text...",
     }
   ),
   document.getElementById("app")
