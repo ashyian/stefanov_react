@@ -1,8 +1,7 @@
-// Создание компонента
-var TextAreaCounter = React.createClass({
-
+// Примесь - коллекция методов и свойств
+var logMixin = {
   _log: function(methodName, args) {
-    console.log(methodName, args);
+    console.log(this.name + "::" + methodName, args);
   },
 
   // Вызывается перед обновлением компонента
@@ -33,7 +32,17 @@ var TextAreaCounter = React.createClass({
   // Вызывается перед удалением компонента из DOM
   componentWillUnmount: function() {
     this._log('componentWillUnmount', arguments);
-  },
+  }
+};
+
+// Создание компонента
+var TextAreaCounter = React.createClass({
+
+  // Свойство для идентификации вызывающего кода (исп. в методе _log миксина)
+  name: "TextAreaCounter",
+
+  // Включение миксина в компонент
+  mixins: [logMixin],
 
   // Объявление списка принимаемых свойств
   propTypes: {
