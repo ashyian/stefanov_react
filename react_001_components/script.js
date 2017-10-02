@@ -39,14 +39,15 @@ var logMixin = {
   var Counter = React.createClass({
     name: "Counter",
     // mixins: [logMixin],
+    mixins: [React.addons.PureRenderMixin],
     propTypes: {
       count: React.PropTypes.number.isRequired,
     },
-  
+
     // вызывается перед componentWillUpdate() и позволяет отменить обновление
-    shouldComponentUpdate(nextProps, nextState_ignore) {
-      return nextProps.count !== this.props.count;
-    },
+    // shouldComponentUpdate(nextProps, nextState_ignore) {
+    //   return nextProps.count !== this.props.count;
+    // },
 
     render: function() {
       console.log(this.name + "::render()");
