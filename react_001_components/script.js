@@ -38,11 +38,18 @@ var logMixin = {
 // Дочерний компонент
   var Counter = React.createClass({
     name: "Counter",
-    mixins: [logMixin],
+    // mixins: [logMixin],
     propTypes: {
       count: React.PropTypes.number.isRequired,
     },
+  
+    // вызывается перед componentWillUpdate() и позволяет отменить обновление
+    shouldComponentUpdate(nextProps, nextState_ignore) {
+      return nextProps.count !== this.props.count;
+    },
+
     render: function() {
+      console.log(this.name + "::render()");
       return React.DOM.span(null, this.props.count);
     }
   });
@@ -54,7 +61,7 @@ var TextAreaCounter = React.createClass({
   name: "TextAreaCounter",
 
   // Включение миксина в компонент
-  mixins: [logMixin],
+  // mixins: [logMixin],
 
   // Объявление списка принимаемых свойств
   propTypes: {
@@ -75,7 +82,7 @@ var TextAreaCounter = React.createClass({
       text: event.target.value,
     });
   },
-  
+
   componentWillReceiveProps: function(nextProps) {
     console.log("componentWillReceiveProps");
     this.setState({
@@ -85,6 +92,8 @@ var TextAreaCounter = React.createClass({
 
   // Возврат React-компонента для отображения
   render: function() {
+    console.log(this.name + "::render()");
+
     var counter = null;
 
     // Если в поле нет символов - количество букв не выводится
