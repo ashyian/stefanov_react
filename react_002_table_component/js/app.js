@@ -33,10 +33,24 @@ var Excel = React.createClass({
     return {data: this.props.initialData};
   },
 
+  // sorting column by clicking on head
+  _sort: function(event) {
+    var columnNumber = event.target.cellIndex;
+    var dataCopy = this.state.data.slice();
+
+    dataCopy.sort(function(a, b) {
+      return a[columnNumber] > b[columnNumber] ? 1 : -1;
+    });
+
+    this.setState({
+      data: dataCopy
+    });
+  },
+
   render: function() {
     return (
       React.DOM.table(null,
-        React.DOM.thead(null,
+        React.DOM.thead({onClick: this._sort},
           React.DOM.tr(null,
             this.props.headers.map(function(title, idx) {
               return React.DOM.th({key: idx}, title);
