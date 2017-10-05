@@ -33,7 +33,8 @@ var Excel = React.createClass({
     return {
       data: this.props.initialData,
       sortby: null,
-      descending: false
+      descending: false,
+      editableCell: null
     };
   },
 
@@ -56,8 +57,29 @@ var Excel = React.createClass({
     });
   },
 
+  _save: function(event) {
+    event.preventDefault();
+    var data = this.state.data.slice();
+    var input = event.target.firstChild;
+    data[this.state.editableCell.row][this.state.editableCell.cell] = input.value;
+    this.setState({
+      editableCell: null,
+      data: data
+    });
+  },
+
+  _showEditor: function(event) {
+    this.setState({
+      editableCell: {
+        row: parseInt(event.target.dataset.row, 10),
+        cell: event.target.cellIndex
+      }
+    });
+  },
+
   render: function() {
     return (
+
       React.DOM.table(null,
         React.DOM.thead({onClick: this._sort},
           React.DOM.tr(null,
@@ -69,18 +91,39 @@ var Excel = React.createClass({
             }, this)
           )
         ),
-        React.DOM.tbody(null,
-          this.state.data.map(function(row, idx) {
+
+        React.DOM.tbody({onDoubleClick: this._showEditor},
+          this.state.data.map(function(row, rowidx) {
             return (
-              React.DOM.tr({key: idx},
+              React.DOM.tr({key: rowidx},
                 row.map(function(cell, idx) {
-                  return React.DOM.td({key: idx}, cell);
-                })
+                  var content = cell;
+                  var editableCell = this.state.editableCell;
+
+                  if (editableCell && editableCell.row === rowidx && editableCell.cell === idx) {
+                    content = React.DOM.form({onSubmit: this._save},
+                      React.DOM.input({
+                        type: "text",
+                        defaultValue: content
+                      })
+                    );
+                  }
+
+                  return React.DOM.td(
+                    {
+                      key: idx,
+                      "data-row": rowidx
+                    },
+                    content
+                  );
+
+                }, this)
               )
             );
-          })
+          }, this)
         )
       )
+
     );
   }
 
